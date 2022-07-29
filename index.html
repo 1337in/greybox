@@ -1,170 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		
+		<title>GreyB0x</title>
 
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
 
-  <title>MrPentester - Security Simplified!</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+			html, body {
+				height: 100%;
+			}
 
-  <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+			.main-container {
+				width: 100%;
+				height: 100%;
+				background: #000000;
+			}
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+			canvas {
+				display: block;
+				margin: 0px auto;
+                                background-image: url("gry2.png");
+                                background-repeat: no-repeat;
+                                background-position: center;
+			}
 
-  <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+			p {
+				position: relative;
+				text-align: center;
+				margin-top: 10px;
+				font-family: monospace;
+			}
 
-  <!-- Template Main CSS File -->
-  <link href="assets/css/style.css" rel="stylesheet">
+			.twitter-share-button {
+				position: absolute !important;
+				bottom: 10px;
+				left: 50%;
+				margin-left: -28px;
+			}
+		</style>
 
-  <!-- =======================================================
-  * Template Name: WeBuild - v4.1.0
-  * Template URL: https://bootstrapmade.com/free-bootstrap-coming-soon-template-countdwon/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
-</head>
+		<link href='https://fonts.googleapis.com/css?family=Molengo' rel='stylesheet' type='text/css'>
 
-<body>
+	</head>
+	<body>
 
-  <!-- ======= Header ======= -->
-  <header id="header">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
+		<div class="main-container">
+			<canvas></canvas>
 
-      <div class="logo">
-        <h1 class="text-light"><a href="index.html"><span>MrPentester</span></a></h1>
-        <!-- Uncomment below if you prefer to use an image logo -->
-        <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
-      </div>
+	
+</div>
+		<script>
 
-      <div class="contact-link float-right">
-        <a href="#contact" class="scrollto">Contact Us</a>
-      </div>
+			(function() {
 
-    </div>
-  </header><!-- End #header -->
+				var canvas = document.querySelector( 'canvas' ),
+					context = canvas.getContext( '2d' ),
 
-  <!-- ======= Hero Section ======= -->
-  <section id="hero">
-    <div class="hero-container">
-      <h1>Mr Pentester</h1>
-      <h2>We're working hard to Launch shortly!</h2>
-      <div class="countdown" data-count="2021/04/27" data-template="%w weeks %d days <br> %h:%m:%s"></div>
+					width = window.innerWidth * 0.7,
+					height = window.innerHeight * 0.7,
 
-      <form action="forms/notify.php" method="post" role="form" class="php-email-form">
-        <div class="row no-gutters">
-          <div class="col-md-6 form-group pr-md-1">
-            <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
-          </div>
-          <div class="col-md-6 form-group pl-md-1">
-            <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
-          </div>
-        </div>
+					radius = Math.min( width, height ) * 0.5,
 
-        <div class="my-3">
-          <div class="loading">Loading</div>
-          <div class="error-message"></div>
-          <div class="sent-message">Your notification request was sent. Thank you!</div>
-        </div>
-        <div class="text-center"><button type="submit">Get notified!</button></div>
-      </form>
-    </div>
-  </section><!-- End Hero -->
+					// Number of layers
+					quality = 180,
 
-  <main id="main">
+					// Layer instances
+					layers = [],
 
-    <!-- ======= Contact Us Section ======= -->
-    <section id="contact" class="contact">
-      <div class="container">
+					// Width/height of layers
+					layerSize = radius * 0.25,
 
-        <div class="section-title">
-          <h2>Contact Us</h2>
-        </div>
+					// Layers that overlap to create the infinity illusion
+					layerOverlap = Math.round( quality * 0.1 );
 
-        <div class="row contact-info">
+				function initialize() {
 
-          <div class="col-md-4">
-            <div class="contact-address">
-              <i class="bi bi-geo-alt"></i>
-              <h3>Address</h3>
-              <address>Chillitray Technologies, Bangalore</address>
-            </div>
-          </div>
+					for( var i = 0; i < quality; i++ ) {
+						layers.push({
+							x: width/2 + Math.sin( i / quality * 2 * Math.PI ) * ( radius - layerSize ),
+							y: height/2 + Math.cos( i / quality * 2 * Math.PI ) * ( radius - layerSize ),
+							r: ( i / quality ) * Math.PI
+						});
+					}
 
-          <div class="col-md-4">
-            <div class="contact-phone">
-              <i class="bi bi-phone"></i>
-              <h3>Phone Number</h3>
-              <p><a href="tel:+919611478322">+191 96114 78322</a></p>
-            </div>
-          </div>
+					resize();
+					update();
 
-          <div class="col-md-4">
-            <div class="contact-email">
-              <i class="bi bi-envelope"></i>
-              <h3>Email</h3>
-              <p><a href="mailto:contact@chillitray.com">contact@chillitray.com</a></p>
-            </div>
-          </div>
+				}
 
-        </div>
+				function resize() {
 
-        <div class="form">
-          <form action="forms/contact.php" method="post" role="form" class="php-email-form">
-            <div class="row">
-              <div class="col-md form-group">
-                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
-              </div>
-              <div class="col-md form-group mt-3 mt-md-0">
-                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
-              </div>
-            </div>
-            <div class="form-group mt-3">
-              <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
-            </div>
-            <div class="form-group mt-3">
-              <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
-            </div>
-            <div class="my-3">
-              <div class="loading">Loading</div>
-              <div class="error-message"></div>
-              <div class="sent-message">Your message has been sent. Thank you!</div>
-            </div>
-            <div class="text-center"><button type="submit">Send Message</button></div>
-          </form>
-        </div>
+					canvas.width = width;
+					canvas.height = height;
 
-      </div>
-    </section><!-- End Contact Us Section -->
+				}
 
-  </main><!-- End #main -->
+				function update() {
 
-  <!-- ======= Footer ======= -->
-  <footer id="footer">
-    <div class="container">
-      <div class="copyright">
-        &copy; Copyright <strong><span>MrPentester</span></strong>. All Rights Reserved
-      </div>
-      <div class="credits">
-       
-        Designed by <a href="https://chillitray.com/">chillitray.com</a>
-      </div>
-    </div>
-  </footer><!-- End #footer -->
+					requestAnimationFrame( update );
 
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
+					step();
+					clear();
+					paint();
 
-  <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
+				}
 
-</body>
+				// Takes a step in the simulation
+				function step () {
 
+					for( var i = 0, len = layers.length; i < len; i++ ) {
+
+						layers[i].r += 0.01;
+
+					}
+
+				}
+
+				// Clears the painting
+				function clear() {
+
+					context.clearRect( 0, 0, canvas.width, canvas.height );
+
+				}
+
+				// Paints the current state
+				function paint() {
+
+					// Number of layers in total
+					var layersLength = layers.length;
+
+					// Draw the overlap layers
+					for( var i = layersLength - layerOverlap, len = layersLength; i < len; i++ ) {
+
+						context.save();
+						context.globalCompositeOperation = 'destination-over';
+						paintLayer( layers[i] );
+						context.restore();
+
+					}
+
+					// Cut out the overflow layers using the first layer as a mask
+					context.save();
+					context.globalCompositeOperation = 'destination-in';
+					paintLayer( layers[0], true );
+					context.restore();
+
+					// // Draw the normal layers underneath the overlap
+					for( var i = 0, len = layersLength; i < len; i++ ) {
+
+						context.save();
+						context.globalCompositeOperation = 'destination-over';
+						paintLayer( layers[i] );
+						context.restore();
+
+					}
+
+				}
+
+				// Pains one layer
+				function paintLayer( layer, mask ) {
+					size = layerSize + ( mask ? 10 : 0 );
+					size2 = size / 2;
+
+					context.translate( layer.x, layer.y );
+					context.rotate( layer.r );
+
+					// No stroke if this is a mask
+					if( !mask ) {
+						context.strokeStyle = '#000';
+						context.lineWidth = 1;
+						context.strokeRect( -size2, -size2, size, size );
+					}
+
+					context.fillStyle = '#fff';
+					context.fillRect( -size2, -size2, size, size );
+
+				}
+
+				/**
+				 * rAF polyfill.
+				 */
+				(function() {
+					var lastTime = 0;
+					var vendors = ['ms', 'moz', 'webkit', 'o'];
+					for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+						window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+						window.cancelAnimationFrame = 
+						  window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+					}
+
+					if (!window.requestAnimationFrame)
+						window.requestAnimationFrame = function(callback, element) {
+							var currTime = new Date().getTime();
+							var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+							var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+							  timeToCall);
+							lastTime = currTime + timeToCall;
+							return id;
+						};
+
+					if (!window.cancelAnimationFrame)
+						window.cancelAnimationFrame = function(id) {
+							clearTimeout(id);
+						};
+				}());
+
+				initialize();
+
+			})();
+
+
+		</script>
+
+	</body>
 </html>
